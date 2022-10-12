@@ -2,3 +2,4 @@ core.*
 payload.bin
 .gdb_history
 __pycache__
+*.gadgets

