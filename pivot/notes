@@ -1,0 +1,23 @@
+From the challenge description: You could also read a .got.plt entry into a register, modify it in-memory, then redirect execution to the address in that register.
+
+Useful Gadgets
+==============
+Dump of assembler code for function usefulGadgets:
+   0x00000000004009bb <+0>:     pop    rax
+   0x00000000004009bc <+1>:     ret
+   0x00000000004009bd <+2>:     xchg   rsp,rax
+   0x00000000004009bf <+4>:     ret
+   0x00000000004009c0 <+5>:     mov    rax,QWORD PTR [rax]
+   0x00000000004009c3 <+8>:     ret
+   0x00000000004009c4 <+9>:     add    rax,rbp
+   0x00000000004009c7 <+12>:    ret
+   0x00000000004009c8 <+13>:    nop    DWORD PTR [rax+rax*1+0x0]
+
+Approach
+========
+- Immediately pivot to heap ROP chain
+- Call foothold_function once to populate its GOT stub
+- Read GOT stub of foothold_function
+- calculate: address of ret2win = foothold_function + 279 (determined at runtime)
+  - this is different than the offset obtained from libpivot.so addresses
+- "call register" gadget
